@@ -1,0 +1,131 @@
+{
+	"name": "Project Aggregator",
+
+	"namespace": "UIOWA\\ProjectAggregator",
+
+	"description": "Continuously update a single project with data and metadata from multiple others",
+
+	"documentation": "README.md",
+
+	"authors": [
+		{
+			"name": "Eric Neuhaus",
+			"email": "eric-neuhaus@uiowa.edu",
+			"institution": "University of Iowa"
+		}
+	],
+
+	"permissions": [
+		"redcap_module_system_enable",
+		"redcap_module_save_configuration"
+	],
+	
+	"enable-every-page-hooks-on-system-pages": false,
+
+	"links": {
+		"project": [
+			{
+				"name": "Project Aggregator",
+				"url": "index.php"
+			}
+		],
+		"control-center": [
+
+		]
+	},
+
+	"no-auth-pages": [
+
+	],
+
+	"project-settings": [
+		{
+			"key": "aggregate-note",
+			"name": "Project note to match on when loading aggregate projects",
+			"type": "text",
+			"required": true,
+			"repeatable": false
+		},
+		{
+			"key": "source-project-form",
+			"name": "Instrument to import from aggregated projects",
+			"type": "form-list",
+			"required": false,
+			"repeatable": true
+		},
+		{
+			"key": "source-project-field",
+			"name": "Field to import from aggregated projects",
+			"type": "field-list",
+			"required": false,
+			"repeatable": true
+		},
+		{
+			"key": "source-project-metadata",
+			"name": "Additional metadata to include from aggregated projects",
+			"required": false,
+			"type": "dropdown",
+			"repeatable": true,
+			"choices": [
+				{
+					"name": "app_title",
+					"value": "app_title"
+				},
+				{
+					"name": "purpose",
+					"value": "purpose"
+				},
+				{
+					"name": "purpose_other",
+					"value": "purpose_other"
+				},
+				{
+					"name": "project_note",
+					"value": "project_note"
+				},
+				{
+					"name": "project_pi_firstname",
+					"value": "project_pi_firstname"
+				},
+				{
+					"name": "project_pi_mi",
+					"value": "project_pi_mi"
+				},
+				{
+					"name": "project_pi_lastname",
+					"value": "project_pi_lastname"
+				},
+				{
+					"name": "project_pi_email",
+					"value": "project_pi_email"
+				},
+				{
+					"name": "project_irb_number",
+					"value": "project_irb_number"
+				}
+			]
+		},
+		{
+			"key": "delete-token",
+			"name": "Project API token (required for pre-import data wipe)",
+			"type": "text"
+		}
+	],
+
+	"crons": [
+		{
+			"cron_name": "projectaggregatorautoaggregate",
+			"cron_description": "Repopulate project with aggregate data",
+			"method": "bulkAggregate",
+			"cron_frequency": "86400",
+			"cron_max_run_time": "1200"
+		}
+	],
+
+	"compatibility": {
+		"php-version-min": "",
+		"php-version-max": "",
+		"redcap-version-min": "",
+		"redcap-version-max": ""
+	}
+}

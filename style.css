@@ -1,0 +1,13 @@
+.table-primary th {
+    text-align: center;
+    font-weight: bold;
+}
+
+.centered {
+    text-align: center;
+}
+
+.cron-timestamp {
+    color: green;
+    font-weight: bold;
+}
