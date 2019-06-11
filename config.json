@@ -14,11 +14,6 @@
 			"institution": "University of Iowa"
 		}
 	],
-
-	"permissions": [
-		"redcap_module_system_enable",
-		"redcap_module_save_configuration"
-	],
 	
 	"enable-every-page-hooks-on-system-pages": false,
 
