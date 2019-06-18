@@ -2,7 +2,7 @@
     <h3>Project Aggregator</h3>
     <br />
     <p>
-        {$totalProjectCount} projects tagged "<b>{$note}</b>" were found. Please review before initiating the aggregation process to ensure the expected data will be included. Any projects with data import issues will be skipped.
+        {$totalProjectCount} projects tagged "<b>{$note}</b>" were found. Please review before initiating the aggregation process to ensure the expected data will be included. Any projects with import errors will be skipped.
     </p>
     {if $cronInfo.cron_enabled == 'ENABLED'}
         <p>
@@ -15,7 +15,7 @@
                 <th scope="col">PID</th>
                 <th scope="col">Project Title</th>
                 <th scope="col">Record Count</th>
-                <th scope="col">Import Status</th>
+                <th scope="col">Import Errors</th>
             </tr>
         </thead>
         <tbody id="projects-table">
@@ -24,7 +24,7 @@
                 <td class="pid centered">{$project.project_id}</td>
                 <td><a href="{$projectUrl}{$project.project_id}">{$project.app_title}</a></td>
                 <td class="centered">{$project.record_count}</td>
-                <td class="centered"><div class='aggregateProgress'>Ready</div></td>
+                <td class="centered"><div class='aggregateProgress'></div></td>
             </tr>
         {/foreach}
         {if $noRecordsCount > 0}

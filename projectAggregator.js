@@ -8,51 +8,50 @@ $(document).ready(function() {
             .addClass('fas fa-spinner fa-spin')
             .html('');
 
-        $('.project-row').each(function() {
-            UIOWA_ProjectAggregator.aggregateToProject($(this));
-        });
+        UIOWA_ProjectAggregator.aggregateToProject();
     });
 });
 
-UIOWA_ProjectAggregator.completedProjectCount = 0;
-UIOWA_ProjectAggregator.importedRecordCount = 0;
-
-UIOWA_ProjectAggregator.aggregateToProject = function($row) {
-    var pid = $row.find('.pid').html();
-    var spinner = 'fas fa-spinner fa-spin';
-    var progressDiv = $row.find('.aggregateProgress');
-    var self = this;
-
-    progressDiv
-        .addClass(spinner)
-        .html('');
-
+UIOWA_ProjectAggregator.aggregateToProject = function() {
     $.ajax({
         method: 'POST',
-        url: self.requestUrl + '&type=single',
+        url: UIOWA_ProjectAggregator.requestUrl,
         data: pid,
         success: function (data) {
-            data = JSON.parse(data);
-            progressDiv.removeClass(spinner);
+            $.each(JSON.parse(data), function (key, result) {
+                if (key == 'saved') {
+                    if (result.errors.length > 0) {
+                        $('#start')
+                            .addClass('btn-danger')
+                            .find('span')
+                            .removeClass('fas fa-spinner fa-spin btn-primary')
+                            .html('Import Failed');
 
-            if (data.errors.length > 0) {
-                progressDiv.html(data.errors);
-            }
-            else {
-                progressDiv.html('Done!');
+                        alert('Failed to complete import of aggregate data. ERROR:' + result.errors);
+                    }
+                    else {
+                        var recordCount = Object.keys(result.ids).length;
 
-                self.importedRecordCount += Object.keys(data.ids).length;
-            }
+                        $('#start')
+                            .addClass('btn-success')
+                            .find('span')
+                            .removeClass('fas fa-spinner fa-spin btn-primary')
+                            .html('Imported ' + recordCount + ' Records');
+                    }
+                }
+                else {
+                    var $row = $('.pid:contains(' + key + ')').parent();
+                    var spinner = 'fas fa-spinner fa-spin';
+                    var progressDiv = $row.find('.aggregateProgress');
 
-            self.completedProjectCount++;
-
-            if (self.completedProjectCount == $('.project-row').length) {
-                $('#start')
-                    .addClass('btn-success')
-                .find('span')
-                    .removeClass('fas fa-spinner fa-spin btn-primary')
-                    .html('Imported ' + self.importedRecordCount + ' Records');
-            }
+                    if (result.errors.length > 0) {
+                        progressDiv.html(result.errors);
+                    }
+                    else {
+                        progressDiv.html('N/A');
+                    }
+                }
+            })
         }
     });
 };

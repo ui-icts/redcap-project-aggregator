@@ -30,7 +30,8 @@ $sql = "
 $cronInfo = db_fetch_assoc(db_query($sql));
 
 $projectUrl =
-    APP_PATH_WEBROOT_FULL .
+    (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') .
+    SERVER_NAME .
     APP_PATH_WEBROOT .
     'ProjectSetup/index.php?pid=';
 

@@ -13,36 +13,76 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 		define("MODULE_DOCROOT", $this->getModulePath());
 	}
 
-	public function bulkAggregate() {
-		// get all project_ids where module is enabled
-		$sql="
-			SELECT s.project_id
-			FROM redcap_external_modules m, redcap_external_module_settings s
-			WHERE m.external_module_id = s.external_module_id
-				AND s.value = 'true'
-				AND m.directory_prefix = 'project_aggregator'
-				AND s.`key` = 'enabled'
-		";
+	public function cronAggregate() {
+		$this->bulkAggregate();
+	}
 
-		$result = db_query($sql);
+	public function bulkAggregate($pid = null) {
+		$pids = array();
+		$results = array();
 
-		// for each project with module enabled
-		while($row = db_fetch_assoc($result)) {
-			$destinationPid = $row['project_id'];
+		if ($pid == null) {
+			// get all project_ids where module is enabled
+			$sql="
+				SELECT s.project_id
+				FROM redcap_external_modules m, redcap_external_module_settings s
+				WHERE m.external_module_id = s.external_module_id
+					AND s.value = 'true'
+					AND m.directory_prefix = 'project_aggregator'
+					AND s.`key` = 'enabled'
+			";
+
+			$result = db_query($sql);
+
+			while($row = db_fetch_assoc($result)) {
+				array_push($pids, $row['project_id']);
+			}
+		}
+		else {
+			array_push($pids, $pid);
+		}
+
+		// for each destination project
+		foreach ($pids as $destinationPid) {
 			$token = $this->getProjectSetting('delete-token', $destinationPid);
 			$sourceProjects = $this->getSourceProjects($destinationPid, false);
+			$aggregatedData = array();
 
 			if ($token) {
 				$this->deleteExistingRecords($destinationPid, $token);
 			}
 
 			foreach ($sourceProjects as $project) {
-				$this->aggregateToProject($destinationPid, $project['project_id']);
+				$sourcePid = $project['project_id'];
+
+				$newData = $this->getAggregateData($destinationPid, $sourcePid);
+
+				// test data import and save result
+				$results[$sourcePid] = \REDCap::saveData(
+					$destinationPid,
+					'json',
+					json_encode($newData),
+					'normal',
+					'YMD',
+					'flat',
+					null,
+					false,
+					false,
+					false
+				);
+
+				if (count($results[$sourcePid]['errors']) == 0) {
+					$aggregatedData = array_merge($aggregatedData, $newData);
+				}
 			}
+
+			$results['saved'] = \REDCap::saveData($destinationPid, 'json', json_encode($aggregatedData));
+
+			echo json_encode($results);
 		}
 	}
 
-	public function aggregateToProject($destinationPid, $sourcePid) {
+	public function getAggregateData($destinationPid, $sourcePid) {
 		$selectedInstruments = $this->getProjectSetting('source-project-form', $destinationPid);
 		$selectedFields = $this->getProjectSetting('source-project-field', $destinationPid);
 		$metadataFields = $this->getProjectSetting('source-project-metadata', $destinationPid);
@@ -74,9 +114,7 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 			array_push($formattedRecords, $record);
 		}
 
-		$saveResult = \REDCap::saveData($destinationPid, 'json', json_encode($formattedRecords));
-
-		return $saveResult;
+		return $formattedRecords;
 	}
 
 	public function getProjectFieldList($pid, $fields, $instruments) {
@@ -99,7 +137,7 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 
 	public function getSourceProjects($modulePid, $includeCounts) {
 		$note = $this->getProjectSetting('aggregate-note', $modulePid);
-		$metadataFields = $this->getProjectSetting('source-project-metadata', $modulePid);
+		$metadataFields = array_filter($this->getProjectSetting('source-project-metadata', $modulePid));
 		$requiredMetadataFields = array('project_id', 'app_title');
 
 		$projectsData = array();

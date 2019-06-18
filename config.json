@@ -111,7 +111,7 @@
 		{
 			"cron_name": "projectaggregatorautoaggregate",
 			"cron_description": "Repopulate project with aggregate data",
-			"method": "bulkAggregate",
+			"method": "cronAggregate",
 			"cron_frequency": "86400",
 			"cron_max_run_time": "1200"
 		}
