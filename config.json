@@ -63,6 +63,10 @@
 			"repeatable": true,
 			"choices": [
 				{
+					"name": "project_id",
+					"value": "project_id"
+				},
+				{
 					"name": "app_title",
 					"value": "app_title"
 				},

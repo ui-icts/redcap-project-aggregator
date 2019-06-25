@@ -98,7 +98,7 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 		//get metadata
 		if ($metadataFields) {
 			$fieldSql = implode(', ', $metadataFields);
-			$sql = "SELECT $fieldSql FROM redcap_projects WHERE project_note = \"$note\" AND project_id <> $destinationPid";
+			$sql = "SELECT $fieldSql FROM redcap_projects WHERE project_note = \"$note\" AND project_id = $sourcePid";
 			$result = db_query($sql);
 
 			$metadata = db_fetch_assoc($result);
