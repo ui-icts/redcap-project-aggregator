@@ -105,6 +105,11 @@
 			]
 		},
 		{
+			"key": "include-survey-hash",
+			"name": "Include Public Survey hash (if exists) from aggregated projects (include a 'public_survey_hash' field in this project)",
+			"type": "checkbox"
+		},
+		{
 			"key": "delete-token",
 			"name": "Project API token (required for pre-import data wipe)",
 			"type": "text"

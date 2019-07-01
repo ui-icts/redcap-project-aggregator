@@ -86,6 +86,7 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 		$selectedInstruments = $this->getProjectSetting('source-project-form', $destinationPid);
 		$selectedFields = $this->getProjectSetting('source-project-field', $destinationPid);
 		$metadataFields = $this->getProjectSetting('source-project-metadata', $destinationPid);
+        $surveyHash = $this->getProjectSetting('include-survey-hash', $destinationPid);
 		$note = $this->getProjectSetting('aggregate-note', $destinationPid);
 
 		$formattedRecords = array();
@@ -110,6 +111,17 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 			if ($metadata) {
 				$record = array_merge($record, $metadata);
 			}
+			if ($surveyHash) {
+                $sql = "SELECT hash
+                    FROM redcap_surveys_participants sp
+                    LEFT JOIN redcap_surveys rs on sp.survey_id = rs.survey_id
+                    WHERE rs.project_id = $sourcePid";
+
+                $result = db_query($sql);
+                $surveyHash = db_fetch_assoc($result)['hash'];
+
+                $record['public_survey_hash'] = $surveyHash;
+            }
 
 			array_push($formattedRecords, $record);
 		}
@@ -142,7 +154,6 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 
 		$projectsData = array();
 
-		// add project_id field to list and format for SQL
 		foreach ($requiredMetadataFields as $field) {
 			if (!array_search($field, $metadataFields)) {
 				array_unshift($metadataFields, $field);
