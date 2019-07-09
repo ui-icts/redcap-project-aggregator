@@ -111,8 +111,9 @@
 		},
 		{
 			"key": "include-survey-timestamp",
-			"name": "Include Public Survey completion timestamp (if exists) from aggregated projects (include a 'public_survey_timestamp' field in this project). Public survey instrument MUST be first selected above.",
-			"type": "checkbox"
+			"name": "Include survey completion timestamp (if exists) for instrument from aggregated projects (include a '[form name]_imported_timestamp' field in this project).",
+			"type": "form-list",
+			"repeatable": true
 		},
 		{
 			"key": "delete-token",

@@ -137,8 +137,11 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
             }
 
 			if ($surveyTimestamp) {
-                $record["public_survey_timestamp"] = $record[$selectedInstruments[0] . '_timestamp'];
-                unset($record[$selectedInstruments[0] . "_timestamp"]);
+			    foreach ($surveyTimestamp as $instrument) {
+                    $record[$instrument . '_imported_timestamp'] = $record[$instrument . '_timestamp'];
+                    unset($record[$instrument . "_timestamp"]);
+                }
+
                 unset($record['redcap_survey_identifier']);
             }
 
