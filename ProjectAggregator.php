@@ -87,6 +87,7 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 		$selectedFields = $this->getProjectSetting('source-project-field', $destinationPid);
 		$metadataFields = $this->getProjectSetting('source-project-metadata', $destinationPid);
         $surveyHash = $this->getProjectSetting('include-survey-hash', $destinationPid);
+        $surveyTimestamp = $this->getProjectSetting('include-survey-timestamp', $destinationPid);
 		$note = $this->getProjectSetting('aggregate-note', $destinationPid);
 
 		$formattedRecords = array();
@@ -94,7 +95,19 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 
 		$sourceFields = $this->getProjectFieldList($sourcePid, $selectedFields, $selectedInstruments);
 
-		$records = json_decode(\REDCap::getData($sourcePid, 'json', null, $sourceFields), true);
+		$records = json_decode(
+		    \REDCap::getData(
+                $sourcePid,
+                'json',
+                null,
+                $sourceFields,
+                null,
+                null,
+                false,
+                false,
+                $surveyTimestamp
+            ), true);
+
 
 		//get metadata
 		if ($metadataFields) {
@@ -121,6 +134,12 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
                 $surveyHash = db_fetch_assoc($result)['hash'];
 
                 $record['public_survey_hash'] = $surveyHash;
+            }
+
+			if ($surveyTimestamp) {
+                $record["public_survey_timestamp"] = $record[$selectedInstruments[0] . '_timestamp'];
+                unset($record[$selectedInstruments[0] . "_timestamp"]);
+                unset($record['redcap_survey_identifier']);
             }
 
 			array_push($formattedRecords, $record);
