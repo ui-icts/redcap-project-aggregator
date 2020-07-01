@@ -2,7 +2,6 @@
 /** @var \UIOWA\ProjectAggregator\ProjectAggregator $module */
 
 require_once APP_PATH_DOCROOT . 'ProjectGeneral/header.php';
-require_once APP_PATH_DOCROOT . 'ProjectGeneral/form_renderer_functions.php';
 
 $note = $module->getProjectSetting('aggregate-note');
 $sourceProjects = $module->getSourceProjects($_GET['pid'], true);

@@ -4,7 +4,7 @@
 This module allows data from multiple source REDCap projects to be aggregated into a single destination project. Source projects are grouped by having an identical "Project Note" string and additional per project metadata (such as title and IRB number) can optionally be included in the aggregated data.
 
 ### Configuration
-This module must be enabled at the project-level of the DESTINATION project in which the aggregate data will be stored. Once enabled, the project note to be searched for in source projects must be defined in the module configuration, as well as a selection of instruments/fields/metadata to be imported.
+This module must be enabled at the project-level of the DESTINATION project in which the aggregate data will be stored. Once enabled, the project note to be searched for in source projects must be defined in the module configuration, as well as a selection of instruments/fields/metadata to be imported. The project note can be set via the Project Setup page (click "Modify project title, purpose, etc." button).
 
 The destination project must include all the exactly named project fields being imported, as well as any additional fields for project metadata.
 
