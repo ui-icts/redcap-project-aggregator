@@ -30,7 +30,7 @@ UIOWA_ProjectAggregator.aggregateToProject = function() {
                         alert('Failed to complete import of aggregate data. ERROR:' + result.errors);
                     }
                     else {
-                        var recordCount = Object.keys(result.ids).length;
+                        const recordCount = Object.keys(result.ids).length;
 
                         $('#start')
                             .addClass('btn-success')
@@ -40,9 +40,9 @@ UIOWA_ProjectAggregator.aggregateToProject = function() {
                     }
                 }
                 else {
-                    var $row = $('.pid:contains(' + key + ')').parent();
-                    var spinner = 'fas fa-spinner fa-spin';
-                    var progressDiv = $row.find('.aggregateProgress');
+                    const $row = $('.pid:contains(' + key + ')').parent();
+                    const spinner = 'fas fa-spinner fa-spin';
+                    const progressDiv = $row.find('.aggregateProgress');
 
                     if (result.errors.length > 0) {
                         progressDiv.html(result.errors);

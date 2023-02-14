@@ -55,7 +55,7 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 			foreach ($sourceProjects as $project) {
 				$sourcePid = $project['project_id'];
 
-				$newData = $this->getAggregateData($destinationPid, $sourcePid);
+				$newData = $this->getAggregateData($destinationPid, $sourcePid);				
 
 				// test data import and save result
 				$results[$sourcePid] = \REDCap::saveData(
@@ -136,7 +136,7 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
                 $record['public_survey_hash'] = $surveyHash;
             }
 
-			if ($surveyTimestamp) {
+			if ($surveyTimestamp[$key] != null && $surveyTimestamp[$key] != "") {
 			    foreach ($surveyTimestamp as $instrument) {
                     $record[$instrument . '_imported_timestamp'] = $record[$instrument . '_timestamp'];
                     unset($record[$instrument . "_timestamp"]);
