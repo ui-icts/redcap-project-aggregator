@@ -9,6 +9,7 @@ $(document).ready(function() {
             .html('');
 
         UIOWA_ProjectAggregator.aggregateToProject();
+    
     });
 });
 

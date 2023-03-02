@@ -1,10 +1,10 @@
 <?php
 namespace UIOWA\ProjectAggregator;
 
-require_once 'vendor/autoload.php';
+// require_once 'vendor/autoload.php';
 
 class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
-	private static $smarty;
+	// private static $smarty;
 
 	private static $apiUrl = APP_PATH_WEBROOT_FULL . 'api/';
 
@@ -236,5 +236,25 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 		curl_close($ch);
 
 		return $output;
+	}
+
+	
+	function redcap_every_page_top() { 
+
+	?>
+
+	<script>
+
+	
+		const pageData = "<?= json_encode($module->getSourceProjects($_GET['pid'], true)) ?>";	
+		
+
+	</script>
+
+	
+
+
+	<?php
+
 	}
 }

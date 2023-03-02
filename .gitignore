@@ -1,3 +1,7 @@
 composer.phar
 db_backup
 templates_c
+vendor
+templates
+composer.json
+composer.lock
