@@ -34,21 +34,6 @@ $projectUrl =
     APP_PATH_WEBROOT .
     'ProjectSetup/index.php?pid=';
 
-// $module->$smarty = new \Smarty();
-// $module->$smarty->setTemplateDir(MODULE_DOCROOT . 'templates');
-// $module->$smarty->setCompileDir(MODULE_DOCROOT . 'templates_c');
-// $module->$smarty->setConfigDir(MODULE_DOCROOT . 'configs');
-// $module->$smarty->setCacheDir(MODULE_DOCROOT . 'cache');
-
-// $module->$smarty->assign('sourceProjects', $sourceProjects);
-// $module->$smarty->assign('totalProjectCount', $totalProjectCount);
-// $module->$smarty->assign('totalRecordCount', $totalRecordCount);
-// $module->$smarty->assign('noRecordsCount', $noRecordsCount);
-// $module->$smarty->assign('note', $note);
-// $module->$smarty->assign('cronInfo', $cronInfo);
-// $module->$smarty->assign('projectUrl', $projectUrl);
-
-// $module->$smarty->display('index.tpl');
 $serializedProjects = json_encode($sourceProjects);
 $serializedCronInfo = json_encode($cronInfo);
 
