@@ -10,6 +10,8 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 		define("MODULE_DOCROOT", $this->getModulePath());
 	}
 
+
+
 	public function cronAggregate() {
 		$this->bulkAggregate();
 	}
@@ -80,6 +82,8 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 	}
 
 	public function getAggregateData($destinationPid, $sourcePid) {
+		error_log("source pid");
+		error_log(json_encode($sourcePid));
 		$selectedInstruments = $this->getProjectSetting('source-project-form', $destinationPid);
 		$selectedFields = $this->getProjectSetting('source-project-field', $destinationPid);
 		$metadataFields = $this->getProjectSetting('source-project-metadata', $destinationPid);
@@ -105,12 +109,24 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
                 $surveyTimestamp
             ), true);
 
+			global $conn;
+			if (!isset($conn)) {
+				db_connect(false);
+			}
 
 		//get metadata
-		if ($metadataFields) {
+		if ($metadataFields[0] !== null) {
+			error_log(json_encode($metadataFields));
 			$fieldSql = implode(', ', $metadataFields);
-			$sql = "SELECT $fieldSql FROM redcap_projects WHERE project_note = \"$note\" AND project_id = $sourcePid";
-			$result = db_query($sql);
+			$sql = "SELECT $fieldSql FROM redcap_projects WHERE project_note = ? AND project_id = ?";
+
+			$stmt = $conn->prepare($sql);
+			$stmt->bind_param("si", $note, $sourcePid);
+			$stmt->execute();
+			$result = $stmt->get_result();
+
+
+			// $result = db_query($sql);
 
 			$metadata = db_fetch_assoc($result);
 		}
@@ -125,9 +141,15 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
                 $sql = "SELECT hash
                     FROM redcap_surveys_participants sp
                     LEFT JOIN redcap_surveys rs on sp.survey_id = rs.survey_id
-                    WHERE rs.project_id = $sourcePid";
+                    WHERE rs.project_id = ?";
 
-                $result = db_query($sql);
+
+					$stmt = $conn->prepare($sql);
+					$stmt->bind_param("i", $sourcePid);
+					$stmt->execute();
+					$result = $stmt->get_result();
+
+                // $result = db_query($sql);
                 $surveyHash = db_fetch_assoc($result)['hash'];
 
                 $record['public_survey_hash'] = $surveyHash;
@@ -181,8 +203,16 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 
 		$fieldSql = implode(', ', $metadataFields);
 
-		$sql = "SELECT $fieldSql FROM redcap_projects WHERE project_note = \"$note\" AND project_id <> $modulePid";
-		$result = db_query($sql);
+		global $conn;
+		if (!isset($conn)) {
+			db_connect(false);
+		}
+
+		$sql = "SELECT $fieldSql FROM redcap_projects WHERE project_note = ? AND project_id <> ?";
+		$stmt = $conn->prepare($sql);
+		$stmt->bind_param("si", $note, $modulePid);
+		$stmt->execute();
+		$result = $stmt->get_result();
 
 		while ($row = db_fetch_assoc($result)) {
 			if ($includeCounts) {
