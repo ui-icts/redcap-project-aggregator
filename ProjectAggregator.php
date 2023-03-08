@@ -75,9 +75,12 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 				}
 			}
 
+			
 			$results['saved'] = \REDCap::saveData($destinationPid, 'json', json_encode($aggregatedData));
 
 			echo json_encode($results);
+		
+	
 		}
 	}
 
@@ -115,13 +118,11 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 		//get metadata
 		if ($metadataFields[0] !== null) {
 			$fieldSql = implode(', ', $metadataFields);
-			$sql = "SELECT $fieldSql FROM redcap_projects WHERE project_note = ? AND project_id = ?";
-
+			$sql = 'SELECT ' . $fieldSql . ' FROM redcap_projects WHERE project_note = ? AND project_id = ?';
 			$stmt = $conn->prepare($sql);
 			$stmt->bind_param("si", $note, $sourcePid);
 			$stmt->execute();
 			$result = $stmt->get_result();
-
 			$metadata = db_fetch_assoc($result);
 		}
 
