@@ -4,7 +4,11 @@
 	"namespace": "UIOWA\\ProjectAggregator",
 
 	"description": "Continuously update a single project with data and metadata from multiple others",
-
+	"versions": {
+		"1.4.6": "Fixed vendor autoload.php error",
+		"1.4.7": "Updated to framework version 9"
+	},
+	"framework-version": 9,
 	"documentation": "README.md",
 
 	  "authors": [
@@ -145,7 +149,7 @@
 	"compatibility": {
 		"php-version-min": "",
 		"php-version-max": "",
-		"redcap-version-min": "",
+		"redcap-version-min": "12.0.4",
 		"redcap-version-max": ""
 	}
 }

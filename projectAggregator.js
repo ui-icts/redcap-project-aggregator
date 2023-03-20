@@ -9,7 +9,6 @@ $(document).ready(function() {
             .html('');
 
         UIOWA_ProjectAggregator.aggregateToProject();
-    
     });
 });
 
@@ -17,7 +16,7 @@ UIOWA_ProjectAggregator.aggregateToProject = function() {
     $.ajax({
         method: 'POST',
         url: UIOWA_ProjectAggregator.requestUrl,
-        data: pid,
+        data: {'pid': pid, 'redcap_csrf_token': UIOWA_ProjectAggregator.redcap_csrf_token},
         success: function (data) {
             $.each(JSON.parse(data), function (key, result) {
                 if (key == 'saved') {
