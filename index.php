@@ -8,7 +8,7 @@ $note = $module->getProjectSetting('aggregate-note');
 $sourceProjects = [];
 
 if (isset($_GET['pid']) && filter_var($_GET['pid'], FILTER_VALIDATE_INT)) {
-    
+
     $sanitizedPid = htmlentities(strip_tags($_GET['pid'], ENT_QUOTES));
     $sourceProjects = $module->getSourceProjects($sanitizedPid, true);
 
@@ -57,7 +57,8 @@ if (isset($_GET['pid']) && filter_var($_GET['pid'], FILTER_VALIDATE_INT)) {
             cronInfo: JSON.parse('<?= str_replace("&quot;", '"', $serializedCronInfo) ?>'),
             noRecordsCount: '<?= $noRecordsCount ?>',
             totalRecordsCount: '<?= $totalRecordsCount ?>',
-            htmlString: ``
+            htmlString: ``,
+            redcap_csrf_token: '<?= $module->getCSRFToken(); ?>'
         };
 
         function generateTable() {
