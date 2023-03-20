@@ -10,8 +10,6 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 		define("MODULE_DOCROOT", $this->getModulePath());
 	}
 
-
-
 	public function cronAggregate() {
 		$this->bulkAggregate();
 	}
@@ -54,7 +52,7 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 			foreach ($sourceProjects as $project) {
 				$sourcePid = $project['project_id'];
 
-				$newData = $this->getAggregateData($destinationPid, $sourcePid);				
+				$newData = $this->getAggregateData($destinationPid, $sourcePid);			
 
 				// test data import and save result
 				$results[$sourcePid] = \REDCap::saveData(
@@ -69,18 +67,15 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 					false,
 					false
 				);
-
 				if (count($results[$sourcePid]['errors']) == 0) {
 					$aggregatedData = array_merge($aggregatedData, $newData);
 				}
 			}
 
-			
 			$results['saved'] = \REDCap::saveData($destinationPid, 'json', json_encode($aggregatedData));
 
 			echo json_encode($results);
 		
-	
 		}
 	}
 
@@ -109,7 +104,7 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
                 false,
                 $surveyTimestamp
             ), true);
-
+			
 			global $conn;
 			if (!isset($conn)) {
 				db_connect(false);
@@ -144,18 +139,18 @@ class ProjectAggregator extends \ExternalModules\AbstractExternalModule {
 				$result = $stmt->get_result();
 
                 $surveyHash = db_fetch_assoc($result)['hash'];
-
                 $record['public_survey_hash'] = $surveyHash;
             }
 
-			if ($surveyTimestamp[$key] != null && $surveyTimestamp[$key] != "") {
 			    foreach ($surveyTimestamp as $instrument) {
+					if ($instrument != null && $instrument != "") {
                     $record[$instrument . '_imported_timestamp'] = $record[$instrument . '_timestamp'];
-                    unset($record[$instrument . "_timestamp"]);
+					   unset($record[$instrument . "_timestamp"]);
+					}
+
                 }
 
                 unset($record['redcap_survey_identifier']);
-            }
 
 			array_push($formattedRecords, $record);
 		}
